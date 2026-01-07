@@ -2,102 +2,118 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Slope Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 :root{
-  --bg:#f4f7fb;
+  --blue:#2563eb;
+  --bg:#f4f6fb;
   --card:#ffffff;
-  --primary:#2563eb;
+  --text:#111827;
   --muted:#6b7280;
   --radius:14px;
-  --shadow:0 12px 30px rgba(0,0,0,0.08);
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  --shadow:0 12px 30px rgba(0,0,0,.08);
 }
+
+*{box-sizing:border-box}
+
 body{
   margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
   background:var(--bg);
-  color:#111;
+  color:var(--text);
 }
+
 .container{
   max-width:1100px;
   margin:auto;
   padding:20px;
 }
+
 .card{
   background:var(--card);
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   padding:22px;
+  margin-bottom:26px;
 }
+
 h1{
-  margin:0 0 6px;
-  color:var(--primary);
+  margin:0;
+  color:var(--blue);
 }
+
 .subtitle{
   color:var(--muted);
-  margin-bottom:20px;
+  margin-top:6px;
 }
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:14px;
-}
+
 label{
+  font-weight:600;
   font-size:14px;
-  color:#444;
 }
+
 input{
   width:100%;
   padding:12px;
+  margin-top:6px;
+  margin-bottom:16px;
   border-radius:10px;
-  border:1px solid #ddd;
-  font-size:16px;
+  border:1px solid #d1d5db;
+  font-size:15px;
 }
-input:focus{
-  outline:none;
-  border-color:var(--primary);
+
+.grid-input{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:16px;
 }
+
 button{
   width:100%;
   padding:14px;
   border:none;
   border-radius:12px;
-  background:var(--primary);
-  color:#fff;
-  font-size:16px;
+  background:var(--blue);
+  color:white;
+  font-weight:700;
   cursor:pointer;
 }
+
 button.secondary{
-  background:#e8eefc;
+  background:#eef2ff;
   color:#111;
+  margin-top:10px;
 }
+
 .results{
-  margin-top:20px;
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px;
+  gap:28px;
+  margin-top:30px;
 }
-@media(max-width:768px){
-  .results{grid-template-columns:1fr;}
-}
+
 .box{
   background:#f9fafb;
   border-radius:12px;
-  padding:16px;
+  padding:22px;
+  line-height:1.6;
 }
+
 .badge{
   display:inline-block;
-  padding:6px 10px;
   background:#e0e7ff;
+  color:#1e3a8a;
+  padding:4px 10px;
   border-radius:999px;
-  font-size:13px;
+  font-size:12px;
   margin-bottom:10px;
 }
-.value{
-  font-size:18px;
-  margin:6px 0;
+
+@media(max-width:900px){
+  .grid-input{grid-template-columns:1fr}
+  .results{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -105,108 +121,88 @@ button.secondary{
 <body>
 <div class="container">
 
-  <div class="card">
-    <h1>Slope Calculator</h1>
-    <div class="subtitle">
-      Find slope, line equation, distance & line type using two points
+<!-- INPUT CARD -->
+<div class="card">
+  <h1>Slope Calculator</h1>
+  <p class="subtitle">Find slope, line equation, distance & line type using two points</p>
+
+  <div class="grid-input">
+    <div>
+      <label>x₁</label>
+      <input id="x1" value="1">
     </div>
-
-    <div class="grid">
-      <div>
-        <label>x₁</label>
-        <input id="x1" type="number" step="any" value="1">
-      </div>
-      <div>
-        <label>y₁</label>
-        <input id="y1" type="number" step="any" value="2">
-      </div>
-      <div>
-        <label>x₂</label>
-        <input id="x2" type="number" step="any" value="4">
-      </div>
-      <div>
-        <label>y₂</label>
-        <input id="y2" type="number" step="any" value="6">
-      </div>
+    <div>
+      <label>y₁</label>
+      <input id="y1" value="2">
     </div>
-
-    <div style="margin-top:16px">
-      <button onclick="calculateSlope()">Calculate Slope</button>
-      <button class="secondary" style="margin-top:10px" onclick="resetCalc()">Reset</button>
-    </div>
-
-    <div class="results">
-      <div class="box" id="resultBox">
-        <div class="badge">Results</div>
-        <div class="value">—</div>
-      </div>
-
-      <div class="box" id="detailsBox">
-        <div class="badge">Details</div>
-        <div class="value">—</div>
-      </div>
+    <div>
+      <label>x₂</label>
+      <input id="x2" value="4">
     </div>
   </div>
+
+  <label>y₂</label>
+  <input id="y2" value="6">
+
+  <button onclick="calculate()">Calculate Slope</button>
+  <button class="secondary" onclick="resetAll()">Reset</button>
+</div>
+
+<!-- RESULTS -->
+<div class="results">
+  <div class="box">
+    <span class="badge">Final Result</span>
+    <div id="result"></div>
+  </div>
+
+  <div class="box">
+    <span class="badge">Details</span>
+    <div id="details"></div>
+  </div>
+</div>
 
 </div>
 
 <script>
-function calculateSlope(){
-  const x1 = parseFloat(x1El.value);
-  const y1 = parseFloat(y1El.value);
-  const x2 = parseFloat(x2El.value);
-  const y2 = parseFloat(y2El.value);
+function calculate(){
+  const x1=Number(document.getElementById("x1").value);
+  const y1=Number(document.getElementById("y1").value);
+  const x2=Number(document.getElementById("x2").value);
+  const y2=Number(document.getElementById("y2").value);
 
-  const resultBox = document.getElementById("resultBox");
-  const detailsBox = document.getElementById("detailsBox");
-
-  if(x1 === x2){
-    resultBox.innerHTML = `
-      <div class="badge">Final Result</div>
-      <div class="value"><strong>Slope:</strong> Undefined</div>
-      <div class="value">Vertical line (x = ${x1})</div>
-    `;
-    detailsBox.innerHTML = `
-      <div class="badge">Details</div>
-      <div class="value">x₂ − x₁ = 0 → division by zero</div>
-      <div class="value">Distance = ${Math.abs(y2 - y1).toFixed(6)}</div>
-    `;
+  if(x1===x2){
+    document.getElementById("result").innerHTML="<b>Undefined slope (vertical line)</b>";
+    document.getElementById("details").innerHTML="";
     return;
   }
 
-  const m = (y2 - y1) / (x2 - x1);
-  const b = y1 - m * x1;
-  const distance = Math.hypot(x2 - x1, y2 - y1);
+  const m=(y2-y1)/(x2-x1);
+  const b=y1-m*x1;
+  const d=Math.sqrt((x2-x1)**2+(y2-y1)**2);
 
-  let type = "Positive slope";
-  if(m < 0) type = "Negative slope";
-  if(m === 0) type = "Zero slope (horizontal line)";
+  let type="Positive slope";
+  if(m<0) type="Negative slope";
+  if(m===0) type="Horizontal line";
 
-  resultBox.innerHTML = `
-    <div class="badge">Final Result</div>
-    <div class="value"><strong>Slope (m):</strong> ${m.toFixed(6)}</div>
-    <div class="value"><strong>Line Type:</strong> ${type}</div>
+  document.getElementById("result").innerHTML=`
+    <b>Slope (m):</b> ${m.toFixed(6)}<br>
+    <b>Line Type:</b> ${type}
   `;
 
-  detailsBox.innerHTML = `
-    <div class="badge">Details</div>
-    <div class="value">Equation: y = ${m.toFixed(6)}x ${b >= 0 ? "+" : ""} ${b.toFixed(6)}</div>
-    <div class="value">Distance between points = ${distance.toFixed(6)}</div>
+  document.getElementById("details").innerHTML=`
+    <b>Equation:</b> y = ${m.toFixed(6)}x + ${b.toFixed(6)}<br>
+    <b>Distance between points:</b> ${d.toFixed(6)}
   `;
 }
 
-function resetCalc(){
-  document.querySelectorAll("input").forEach(i => i.value = "");
-  document.getElementById("resultBox").innerHTML =
-    `<div class="badge">Results</div><div class="value">—</div>`;
-  document.getElementById("detailsBox").innerHTML =
-    `<div class="badge">Details</div><div class="value">—</div>`;
+function resetAll(){
+  document.getElementById("x1").value="";
+  document.getElementById("y1").value="";
+  document.getElementById("x2").value="";
+  document.getElementById("y2").value="";
+  document.getElementById("result").innerHTML="";
+  document.getElementById("details").innerHTML="";
 }
-
-const x1El = document.getElementById("x1");
-const y1El = document.getElementById("y1");
-const x2El = document.getElementById("x2");
-const y2El = document.getElementById("y2");
 </script>
 
 </body>
